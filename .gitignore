@@ -1,0 +1,46 @@
+﻿# === SECRETS ===
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*.class
+.venv/
+venv/
+env/
+myenv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# === NODE ===
+node_modules/
+.next/
+dist/
+build/
+.cache/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === LOGS ===
+*.log
+logs/
+
+# === TESTES ===
+coverage/
+htmlcov/
+.nyc_output/
+
+# === BUILD ===
+*.tsbuildinfo
+*.map
