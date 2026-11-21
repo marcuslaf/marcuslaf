@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: update-profile-assets
+  cancel-in-progress: false
+
 jobs:
   update-svgs:
     runs-on: ubuntu-latest
