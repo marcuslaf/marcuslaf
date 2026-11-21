@@ -44,4 +44,19 @@ jobs:
           git config user.name "marcuslaf[bot]"
           git config user.email "166660635+marcuslaf@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet || git commit -m "chore: update profile assets [skip ci]" && git push
+          if git diff --staged --quiet; then
+            echo "Assets sem alteracoes - nada para commitar."
+            exit 0
+          fi
+          git commit -m "chore: update profile assets [skip ci]"
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              echo "Push concluido na tentativa $attempt."
+              exit 0
+            fi
+            echo "Push rejeitado (tentativa $attempt) - rebaseando em origin/main..."
+            git pull --rebase --autostash origin main || git rebase --abort || true
+            sleep $((attempt * 3))
+          done
+          echo "::error::Falha ao enviar os assets apos 5 tentativas."
+          exit 1
