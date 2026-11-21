@@ -1,14 +1,37 @@
 """Generate a beautiful top languages SVG with donut chart + bars + stars."""
 
 import json
+import os
 import urllib.request
 from collections import defaultdict
 
 username = "marcuslaf"
 
+
+def fetch_json(url: str):
+    """GET a GitHub API URL, authenticated when GITHUB_TOKEN is available.
+
+    Sem token a API do GitHub responde 403 (rate limit de 60 req/h por IP) e o
+    runner hospedado compartilha IP — causa real das falhas intermitentes.
+    """
+    request = urllib.request.Request(url)
+    request.add_header("Accept", "application/vnd.github+json")
+    request.add_header("X-GitHub-Api-Version", "2022-11-28")
+    request.add_header("User-Agent", f"{username}-profile-readme")
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        request.add_header("Authorization", f"Bearer {token}")
+    else:
+        print("[WARN] GITHUB_TOKEN ausente — usando API não autenticada (60 req/h)")
+
+    with urllib.request.urlopen(request, timeout=30) as response:
+        return json.loads(response.read())
+
+
 # Fetch repos
 url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
-repos = json.loads(urllib.request.urlopen(url).read())
+repos = fetch_json(url)
 
 # Aggregate language data: count, size in bytes, stars per language
 lang_data = {}  # lang -> {count, bytes, stars}

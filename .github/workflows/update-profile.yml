@@ -24,6 +24,8 @@ jobs:
         run: pip install requests
 
       - name: Generate top-langs SVG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/gen_top_langs.py
 
       - name: Generate contribution grid SVG
